@@ -117,19 +117,21 @@ class TableExtractor(AddOn):
                     features=[TextractFeatures.TABLES],
                     save_image=True,
                 )
+                os.chdir("out")
+                print("Current working directory inside for loop:", os.getcwd())
                 if output_format == "csv":
                     for i in range(len(doc.tables)):
                         table = EntityList(doc.tables[i])
                         table[0].to_csv(
-                            f"./out/{document.id}-{page_number}-table{i}.xlsx"
+                            f"{document.id}-{page_number}-table{i}.xlsx"
                         )
                 else:
                     for i in range(len(doc.tables)):
                         table = EntityList(doc.tables[i])
                         table[0].to_excel(
-                            f"./out/{document.id}-{page_number}-table{i}.xlsx"
+                            f"{document.id}-{page_number}-table{i}.xlsx"
                         )
-        
+        os.chdir("~")
         contents = os.listdir("out")
         print("Contents of 'out' directory:")
         print(os.listdir("out"))
