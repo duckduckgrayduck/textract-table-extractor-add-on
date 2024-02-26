@@ -58,7 +58,7 @@ class TableExtractor(AddOn):
 
     def setup_credential_file(self):
         """ Setup credential files for AWS CLI """
-        credentials = os.environ("TOKEN")
+        credentials = os.environ["TOKEN"]
         with open('~/.aws/credentials', 'w') as file:
             file.write(credentials)
 
