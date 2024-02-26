@@ -60,6 +60,10 @@ class TableExtractor(AddOn):
         """ Setup credential files for AWS CLI """
         credentials = os.environ["TOKEN"]
         credentials_file_path = os.path.expanduser('~/.aws/credentials')
+        # Create the ~/.aws directory if it doesn't exist
+        aws_directory = os.path.dirname(credentials_file_path)
+        if not os.path.exists(aws_directory):
+            os.makedirs(aws_directory)
         with open(credentials_file_path, 'w') as file:
             file.write(credentials)
 
