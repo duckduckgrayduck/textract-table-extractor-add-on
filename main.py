@@ -126,9 +126,10 @@ class TableExtractor(AddOn):
                     for i in range(len(doc.tables)):
                         table = EntityList(doc.tables[i])
                         # print(table[0])
-                        table[0].to_csv(
-                            f"{document.id}-{page_number}-table{i}.xlsx"
-                        )
+                        csv_filename = f"{document.id}-{page_number}-table{i}.csv"
+                        csv_string = table[0].to_csv()
+                        with open(csv_filename, "w") as csv_file:
+                            csv_file.write(csv_string)
                         print("List files after save:")
                         print(os.listdir("."))
                         print("Current directory after save:")
@@ -148,7 +149,6 @@ class TableExtractor(AddOn):
                         print("Current directory after save:")
                         print(os.getcwd())
                     os.chdir("..")
-        contents = os.listdir("tables")
         print("Contents of 'tables' directory:")
         print(os.listdir("tables"))
 
