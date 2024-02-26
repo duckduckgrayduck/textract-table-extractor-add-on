@@ -83,7 +83,6 @@ class TableExtractor(AddOn):
         output_format = self.data.get("output_format", "csv")
         start_page = self.data.get("start_page", 1)
         end_page = self.data.get("end_page", 1)
-        os.makedirs("out")
         if not self.validate():
             self.set_message(
                 "You do not have sufficient AI credits to run this Add-On on this document set"
@@ -101,8 +100,10 @@ class TableExtractor(AddOn):
 
         self.setup_credential_file()
         extractor = Textractor(profile_name="default", region_name="us-east-1")
+        os.makedirs("out")
         os.chdir("out")
         for document in self.get_documents():
+            os.makedirs("tables")
             outer_bound = end_page + 1
             if end_page > document.page_count:
                 outer_bound = document.page_count + 1
@@ -120,21 +121,26 @@ class TableExtractor(AddOn):
                 )
                 print("Current working directory inside for loop:", os.getcwd())
                 if output_format == "csv":
+                    os.chdir("tables")
+                    print("Current working directory inside for table save:", os.getcwd())
                     for i in range(len(doc.tables)):
                         table = EntityList(doc.tables[i])
                         table[0].to_csv(
                             f"{document.id}-{page_number}-table{i}.xlsx"
                         )
+                    os.chdir(..)
                 else:
+                    os.chdir("tables")
+                    print("Current working directory inside for table save:", os.getcwd())
                     for i in range(len(doc.tables)):
                         table = EntityList(doc.tables[i])
                         table[0].to_excel(
                             f"{document.id}-{page_number}-table{i}.xlsx"
                         )
-        os.chdir("..")
-        contents = os.listdir("out")
-        print("Contents of 'out' directory:")
-        print(os.listdir("out"))
+                    os.chdir("..")
+        contents = os.listdir("tables")
+        print("Contents of 'tables' directory:")
+        print(os.listdir("tables"))
 
         """
         with zipfile.ZipFile("all_tables.zip", "w", zipfile.ZIP_DEFLATED) as zipf:
