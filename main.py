@@ -4,20 +4,21 @@ Extract tables in documents on DocumentCloud using Amazon Textract
 
 import os
 import sys
-import csv
 import zipfile
 import requests
 from PIL import Image
 from textractor import Textractor
 from textractor.visualizers.entitylist import EntityList
-from textractor.data.constants import TextractFeatures, Direction, DirectionalFinderType
+from textractor.data.constants import TextractFeatures
 from documentcloud.addon import AddOn
 from documentcloud.exceptions import APIError
 
+
 class TableExtractor(AddOn):
     """Extract tables using Amazon Textract"""
+
     def calculate_cost(self, documents):
-        """ Given a set of documents, counts the number of pages and returns a cost"""
+        """Given a set of documents, counts the number of pages and returns a cost"""
         total_num_pages = 0
         for doc in documents:
             start_page = self.data.get("start_page", 1)
@@ -45,9 +46,7 @@ class TableExtractor(AddOn):
         if not self.org_id:
             self.set_message("No organization to charge.")
             sys.exit(0)
-        ai_credit_cost = self.calculate_cost(
-            self.get_documents()
-        )
+        ai_credit_cost = self.calculate_cost(self.get_documents())
         try:
             self.charge_credits(ai_credit_cost)
         except ValueError:
@@ -57,33 +56,33 @@ class TableExtractor(AddOn):
         return True
 
     def setup_credential_file(self):
-        """ Setup credential files for AWS CLI """
+        """Setup credential files for AWS CLI"""
         credentials = os.environ["TOKEN"]
-        credentials_file_path = os.path.expanduser('~/.aws/credentials')
+        credentials_file_path = os.path.expanduser("~/.aws/credentials")
         # Create the ~/.aws directory if it doesn't exist
         aws_directory = os.path.dirname(credentials_file_path)
         if not os.path.exists(aws_directory):
             os.makedirs(aws_directory)
-        with open(credentials_file_path, 'w') as file:
+        with open(credentials_file_path, "w") as file:
             file.write(credentials)
 
     def download_image(self, url, filename):
         """Download an image from a URL and save it locally."""
         response = requests.get(url, timeout=20)
-        with open(filename, 'wb') as f:
+        with open(filename, "wb") as f:
             f.write(response.content)
 
     def convert_to_png(self, gif_filename, png_filename):
         """Convert a GIF image to PNG format."""
         gif_image = Image.open(gif_filename)
-        gif_image.save(png_filename, 'PNG')
+        gif_image.save(png_filename, "PNG")
 
     def main(self):
         """The main add-on functionality goes here."""
         output_format = self.data.get("output_format", "csv")
         start_page = self.data.get("start_page", 1)
         end_page = self.data.get("end_page", 1)
-
+        os.makedirs("out")
         if not self.validate():
             self.set_message(
                 "You do not have sufficient AI credits to run this Add-On on this document set"
@@ -91,7 +90,9 @@ class TableExtractor(AddOn):
             sys.exit(0)
 
         if end_page < start_page:
-            self.set_message("The end page you provided is smaller than the start page, try again")
+            self.set_message(
+                "The end page you provided is smaller than the start page, try again"
+            )
             sys.exit(0)
         if start_page < 1:
             self.set_message("Your start page is less than 1, please try again")
@@ -113,9 +114,27 @@ class TableExtractor(AddOn):
                 document = extractor.analyze_document(
                     file_source=image,
                     features=[TextractFeatures.TABLES],
-                    save_image=True
+                    save_image=True,
                 )
-                print(document)
+                if output_format == "csv":
+                    for i in range(len(document.tables)):
+                        table = EntityList(document.tables[i])
+                        table[0].to_csv(
+                            filepath=f"./out/{document.id}-{document.page_number}-table{i}.xlsx"
+                        )
+                else:
+                    for i in range(len(document.tables)):
+                        table = EntityList(document.tables[i])
+                        table[0].to_excel(
+                            filepath=f"./out/{document.id}-{document.page_number}-table{i}.xlsx"
+                        )
+
+        with zipfile.ZipFile("all_tables.zip", "w", zipfile.ZIP_DEFLATED) as zipf:
+            for root, _, files in os.walk("out"):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    zipf.write(file_path, os.path.relpath(file_path, "out"))
+        self.upload_file(open("all_tables.zip"))
 
 
 if __name__ == "__main__":
