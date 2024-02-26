@@ -101,6 +101,7 @@ class TableExtractor(AddOn):
 
         self.setup_credential_file()
         extractor = Textractor(profile_name="default", region_name="us-east-1")
+        os.chdir("out")
         for document in self.get_documents():
             outer_bound = end_page + 1
             if end_page > document.page_count:
@@ -117,7 +118,6 @@ class TableExtractor(AddOn):
                     features=[TextractFeatures.TABLES],
                     save_image=True,
                 )
-                os.chdir("out")
                 print("Current working directory inside for loop:", os.getcwd())
                 if output_format == "csv":
                     for i in range(len(doc.tables)):
