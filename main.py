@@ -102,8 +102,8 @@ class TableExtractor(AddOn):
         extractor = Textractor(profile_name="default", region_name="us-east-1")
         os.makedirs("out")
         os.chdir("out")
+        os.makedirs("tables")
         for document in self.get_documents():
-            os.makedirs("tables")
             outer_bound = end_page + 1
             if end_page > document.page_count:
                 outer_bound = document.page_count + 1
