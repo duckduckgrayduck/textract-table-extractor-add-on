@@ -131,7 +131,8 @@ class TableExtractor(AddOn):
                         table[0].to_excel(
                             f"{document.id}-{page_number}-table{i}.xlsx"
                         )
-        os.chdir("~")
+        home_directory = os.path.expanduser("~")
+        os.chdir(home_directory)
         contents = os.listdir("out")
         print("Contents of 'out' directory:")
         print(os.listdir("out"))
