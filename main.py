@@ -125,6 +125,7 @@ class TableExtractor(AddOn):
                     print("Current working directory inside for table save:", os.getcwd())
                     for i in range(len(doc.tables)):
                         table = EntityList(doc.tables[i])
+                        print(table[0])
                         table[0].to_csv(
                             f"{document.id}-{page_number}-table{i}.xlsx"
                         )
@@ -134,6 +135,7 @@ class TableExtractor(AddOn):
                     print("Current working directory inside for table save:", os.getcwd())
                     for i in range(len(doc.tables)):
                         table = EntityList(doc.tables[i])
+                        print(table[0])
                         table[0].to_excel(
                             f"{document.id}-{page_number}-table{i}.xlsx"
                         )
