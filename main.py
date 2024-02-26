@@ -103,6 +103,7 @@ class TableExtractor(AddOn):
         os.makedirs("out")
         os.chdir("out")
         os.makedirs("tables")
+        os.chdir("..")
         for document in self.get_documents():
             outer_bound = end_page + 1
             if end_page > document.page_count:
