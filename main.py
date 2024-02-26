@@ -6,6 +6,7 @@ import os
 import sys
 import csv
 import zipfile
+import requests
 from PIL import Image
 from textractor import Textractor
 from textractor.visualizers.entitylist import EntityList
@@ -55,6 +56,23 @@ class TableExtractor(AddOn):
             return False
         return True
 
+    def setup_credential_file(self):
+        """ Setup credential files for AWS CLI """
+        credentials = os.environ("TOKEN")
+        with open('~/.aws/credentials', 'w') as file:
+            file.write(credentials)
+
+    def download_image(self, url, filename):
+        """Download an image from a URL and save it locally."""
+        response = requests.get(url, timeout=20)
+        with open(filename, 'wb') as f:
+            f.write(response.content)
+
+    def convert_to_png(self, gif_filename, png_filename):
+        """Convert a GIF image to PNG format."""
+        gif_image = Image.open(gif_filename)
+        gif_image.save(png_filename, 'PNG')
+
     def main(self):
         """The main add-on functionality goes here."""
         output_format = self.data.get("output_format", "csv")
@@ -74,8 +92,25 @@ class TableExtractor(AddOn):
             self.set_message("Your start page is less than 1, please try again")
             sys.exit(0)
 
+        self.setup_credential_file()
+        extractor = Textractor(profile_name="default")
         for document in self.get_documents():
-            pass
+            outer_bound = end_page + 1
+            if end_page > document.page_count:
+                outer_bound = document.page_count + 1
+            for page_number in range(start_page, outer_bound):
+                image_url = document.get_large_image_url(page_number)
+                gif_filename = f"{document.id}-page{page_number}.gif"
+                self.download_image(image_url, gif_filename)
+                png_filename = f"{document.id}-page{page_number}.png"
+                self.convert_to_png(gif_filename, png_filename)
+                image = Image.open(png_filename)
+                document = extractor.analyze_document(
+                    file_source=image,
+                    features=[TextractFeatures.TABLES],
+                    save_image=True
+                )
+                print(document)
 
 
 if __name__ == "__main__":
