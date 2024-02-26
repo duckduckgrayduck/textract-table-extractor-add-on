@@ -129,13 +129,19 @@ class TableExtractor(AddOn):
                         table[0].to_excel(
                             f"./out/{document.id}-{page_number}-table{i}.xlsx"
                         )
+        
+        contents = os.listdir("out")
+        print("Contents of 'out' directory:")
+        for item in contents:
+            print(item)
 
+        """
         with zipfile.ZipFile("all_tables.zip", "w", zipfile.ZIP_DEFLATED) as zipf:
             for root, _, files in os.walk("out"):
                 for file in files:
                     file_path = os.path.join(root, file)
                     zipf.write(file_path, os.path.relpath(file_path, "out"))
-        self.upload_file(open("all_tables.zip"))
+        self.upload_file(open("all_tables.zip"))"""
 
 
 if __name__ == "__main__":
