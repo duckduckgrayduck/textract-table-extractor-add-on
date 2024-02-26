@@ -120,13 +120,13 @@ class TableExtractor(AddOn):
                     for i in range(len(doc.tables)):
                         table = EntityList(doc.tables[i])
                         table[0].to_csv(
-                            filepath=f"./out/{document.id}-{page_number}-table{i}.xlsx"
+                            f"./out/{document.id}-{page_number}-table{i}.xlsx"
                         )
                 else:
                     for i in range(len(doc.tables)):
                         table = EntityList(doc.tables[i])
                         table[0].to_excel(
-                            filepath=f"./out/{document.id}-{page_number}-table{i}.xlsx"
+                            f"./out/{document.id}-{page_number}-table{i}.xlsx"
                         )
 
         with zipfile.ZipFile("all_tables.zip", "w", zipfile.ZIP_DEFLATED) as zipf:
