@@ -132,8 +132,7 @@ class TableExtractor(AddOn):
         
         contents = os.listdir("out")
         print("Contents of 'out' directory:")
-        for item in contents:
-            print(item)
+        print(os.listdir("out"))
 
         """
         with zipfile.ZipFile("all_tables.zip", "w", zipfile.ZIP_DEFLATED) as zipf:
