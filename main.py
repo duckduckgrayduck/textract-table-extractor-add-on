@@ -111,14 +111,14 @@ class TableExtractor(AddOn):
                 png_filename = f"{document.id}-page{page_number}.png"
                 self.convert_to_png(gif_filename, png_filename)
                 image = Image.open(png_filename)
-                document = extractor.analyze_document(
+                doc = extractor.analyze_document(
                     file_source=image,
                     features=[TextractFeatures.TABLES],
                     save_image=True,
                 )
                 if output_format == "csv":
-                    for i in range(len(document.tables)):
-                        table = EntityList(document.tables[i])
+                    for i in range(len(doc.tables)):
+                        table = EntityList(doc.tables[i])
                         table[0].to_csv(
                             filepath=f"./out/{document.id}-{document.page_number}-table{i}.xlsx"
                         )
