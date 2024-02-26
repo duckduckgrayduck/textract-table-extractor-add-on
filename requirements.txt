@@ -1,3 +1,4 @@
 python-documentcloud==4.0.1
 requests
 amazon-textract-textractor
+pandas

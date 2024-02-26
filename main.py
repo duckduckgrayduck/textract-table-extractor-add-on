@@ -6,6 +6,7 @@ import os
 import sys
 import zipfile
 import requests
+import pandas
 from PIL import Image
 from textractor import Textractor
 from textractor.visualizers.entitylist import EntityList
