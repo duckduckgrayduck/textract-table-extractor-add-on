@@ -98,7 +98,7 @@ class TableExtractor(AddOn):
             sys.exit(0)
 
         self.setup_credential_file()
-        extractor = Textractor(profile_name="default")
+        extractor = Textractor(profile_name="default", region_name="us-east-1")
         for document in self.get_documents():
             outer_bound = end_page + 1
             if end_page > document.page_count:
