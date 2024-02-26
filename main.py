@@ -128,7 +128,7 @@ class TableExtractor(AddOn):
                         table[0].to_csv(
                             f"{document.id}-{page_number}-table{i}.xlsx"
                         )
-                    os.chdir(..)
+                    os.chdir("..")
                 else:
                     os.chdir("tables")
                     print("Current working directory inside for table save:", os.getcwd())
