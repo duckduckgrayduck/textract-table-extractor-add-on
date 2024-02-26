@@ -32,7 +32,6 @@ class TableExtractor(AddOn):
             pages_to_analyze = last_page - start_page + 1
             total_num_pages += pages_to_analyze
         cost = total_num_pages * 10
-        print(cost)
         return cost
 
     def validate(self):
@@ -119,10 +118,8 @@ class TableExtractor(AddOn):
                     features=[TextractFeatures.TABLES],
                     save_image=True,
                 )
-                print("Current working directory inside for loop:", os.getcwd())
                 if output_format == "csv":
                     os.chdir("tables")
-                    print("Current working directory inside for table save:", os.getcwd())
                     for i in range(len(doc.tables)):
                         table = EntityList(doc.tables[i])
                         # print(table[0])
@@ -130,27 +127,16 @@ class TableExtractor(AddOn):
                         csv_string = table[0].to_csv()
                         with open(csv_filename, "w") as csv_file:
                             csv_file.write(csv_string)
-                        print("List files after save:")
-                        print(os.listdir("."))
-                        print("Current directory after save:")
-                        print(os.getcwd())
                     os.chdir("..")
                 else:
                     os.chdir("tables")
-                    print("Current working directory inside for table save:", os.getcwd())
                     for i in range(len(doc.tables)):
                         table = EntityList(doc.tables[i])
                         # print(table[0])
                         table[0].to_excel(
                             f"{document.id}-{page_number}-table{i}.xlsx"
                         )
-                        print("List files after save:")
-                        print(os.listdir("."))
-                        print("Current directory after save:")
-                        print(os.getcwd())
                     os.chdir("..")
-        print("Contents of 'tables' directory:")
-        print(os.listdir("tables"))
 
         with zipfile.ZipFile("all_tables.zip", "w", zipfile.ZIP_DEFLATED) as zipf:
             for root, _, files in os.walk("tables"):
