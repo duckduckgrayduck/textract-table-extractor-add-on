@@ -59,7 +59,8 @@ class TableExtractor(AddOn):
     def setup_credential_file(self):
         """ Setup credential files for AWS CLI """
         credentials = os.environ["TOKEN"]
-        with open('~/.aws/credentials', 'w') as file:
+        credentials_file_path = os.path.expanduser('~/.aws/credentials')
+        with open(credentials_file_path, 'w') as file:
             file.write(credentials)
 
     def download_image(self, url, filename):
