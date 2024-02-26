@@ -152,13 +152,12 @@ class TableExtractor(AddOn):
         print("Contents of 'tables' directory:")
         print(os.listdir("tables"))
 
-        """
         with zipfile.ZipFile("all_tables.zip", "w", zipfile.ZIP_DEFLATED) as zipf:
-            for root, _, files in os.walk("out"):
+            for root, _, files in os.walk("tables"):
                 for file in files:
                     file_path = os.path.join(root, file)
-                    zipf.write(file_path, os.path.relpath(file_path, "out"))
-        self.upload_file(open("all_tables.zip"))"""
+                    zipf.write(file_path, os.path.relpath(file_path, "tables"))
+        self.upload_file(open("all_tables.zip"))
 
 
 if __name__ == "__main__":
