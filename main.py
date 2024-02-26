@@ -123,8 +123,8 @@ class TableExtractor(AddOn):
                             filepath=f"./out/{document.id}-{document.page_number}-table{i}.xlsx"
                         )
                 else:
-                    for i in range(len(document.tables)):
-                        table = EntityList(document.tables[i])
+                    for i in range(len(doc.tables)):
+                        table = EntityList(doc.tables[i])
                         table[0].to_excel(
                             filepath=f"./out/{document.id}-{document.page_number}-table{i}.xlsx"
                         )
