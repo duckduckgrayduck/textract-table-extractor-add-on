@@ -79,6 +79,7 @@ class TableExtractor(AddOn):
 
     def main(self):
         """The main add-on functionality goes here."""
+        self.client.session.headers.update({'User-Agent': 'Textract Table Extractor Add-On'})
         output_format = self.data.get("output_format", "csv")
         start_page = self.data.get("start_page", 1)
         end_page = self.data.get("end_page", 1)
