@@ -1,5 +1,4 @@
-python-documentcloud==4.8.1
+python-documentcloud==4.0.1
 requests
 amazon-textract-textractor
 pandas
-python-squarelet==0.6.0
